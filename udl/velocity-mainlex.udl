@@ -1,0 +1,18 @@
+language Velocity
+
+include "html2js.udl"
+include "html2css.udl"
+include "html2velocity.udl"
+
+include "css2html.udl"
+
+include "js2html.udl"
+
+include "velocity2html.udl"
+
+language Velocity
+
+include "html.udl"
+include "csslex.udl"
+include "jslex.udl"
+include "velocitylex.udl"

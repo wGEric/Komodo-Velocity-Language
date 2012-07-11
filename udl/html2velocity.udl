@@ -1,0 +1,16 @@
+family markup
+
+state IN_M_DEFAULT:
+'#'	: paint(upto, M_DEFAULT), redo, spush_check(IN_M_DEFAULT), => IN_TPL_DEFAULT
+'$'	: paint(upto, M_DEFAULT), redo, spush_check(IN_M_DEFAULT), => IN_TPL_DEFAULT
+/[0-9]/	: paint(upto, M_DEFAULT), redo, => IN_TPL_DEFAULT
+/('|")/ : paint(upto, M_DEFAULT), redo, => IN_TPL_DEFAULT
+
+state IN_M_STAG_ATTR_DSTRING:
+'$'		: paint(upto, M_STRING), spush_check(IN_M_STAG_ATTR_DSTRING), => IN_TPL_REFERENCE1
+
+state IN_M_STAG_ATTR_SSTRING:
+'$'		: paint(upto, M_STRING), spush_check(IN_M_STAG_ATTR_SSTRING), => IN_TPL_REFERENCE1
+
+state IN_M_STAG_POST_TAGNAME:
+'$'		: paint(upto, TPL_DEFAULT), => IN_TPL_REFERENCE1

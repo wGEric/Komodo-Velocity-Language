@@ -1,0 +1,46 @@
+family tpl
+
+## Directives
+state IN_TPL_DIRECTIVE1:
+/$/ : redo, spop_check, => IN_M_DEFAULT
+/./ : redo, spop_check, => IN_M_DEFAULT
+
+## Comments
+state IN_TPL_COMMENT_1:
+/[\r\n]/ : paint(upto, TPL_COMMENT), spop_check, => IN_M_DEFAULT
+
+state IN_TPL_COMMENT_2 :
+'*#' : paint(include, TPL_COMMENTBLOCK), spop_check, => IN_M_DEFAULT
+
+## References
+state IN_TPL_REFERENCE1:
+'}' : paint(include, TPL_IDENTIFIER), spop_check, => IN_M_DEFAULT
+/[^\!\{a-zA-Z0-9_\-\.]/	: paint(upto, TPL_IDENTIFIER), spop_check, redo, => IN_M_DEFAULT
+
+## Strings
+state IN_TPL_STRING:
+/('|")/ : paint(include, TPL_STRING), spop_check, => IN_M_DEFAULT
+
+## Numbers
+state IN_TPL_NUMBER_1 :
+/$/ : paint(upto, TPL_NUMBER), spop_check, => IN_M_DEFAULT
+'.' : => IN_TPL_NUMBER_2
+/[\d]/ : #stay
+/[Ee][-+]?/ : => IN_TPL_NUMBER_3
+/./ : paint(upto, TPL_NUMBER), redo, spop_check, => IN_M_DEFAULT
+
+state IN_TPL_NUMBER_2:
+/$/ : paint(upto, TPL_NUMBER), spop_check, => IN_M_DEFAULT
+/[\d]/ : #stay
+/[Ee][-+]?/ : => IN_TPL_NUMBER_3
+/./ : paint(upto, TPL_NUMBER), redo, spop_check, => IN_M_DEFAULT
+
+state IN_TPL_NUMBER_2b:
+/$/ : paint(upto, TPL_OPERATOR), spop_check, => IN_M_DEFAULT
+/[\d]+/ : #stay
+/[Ee][-+]?/ : => IN_TPL_NUMBER_3
+/./ : paint(upto, TPL_OPERATOR), redo, spop_check, => IN_M_DEFAULT
+
+state IN_TPL_NUMBER_3:
+/$/ : paint(upto, TPL_NUMBER), spop_check, => IN_M_DEFAULT
+/[^\d]/ : paint(upto, TPL_NUMBER), redo, spop_check, => IN_M_DEFAULT
